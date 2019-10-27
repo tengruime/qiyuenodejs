@@ -1,0 +1,15 @@
+module.exports = {
+    //prod
+    environment:'dev',
+    database:{
+        dbName:'7yue',
+        host:'localhost',
+        port:3306,
+        user:'root',
+        password:'11111111'
+    },
+    security:{
+        secretKey:'abcdefg',
+        expiresIn:60*60*24*30
+    }
+}
