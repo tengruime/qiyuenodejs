@@ -16,7 +16,7 @@ router.post('/', async (ctx)=>{
         case LoginType.USER_EMAIL:
             token = await emailLogin(v.get('body.account'),v.get('body.secret'))
             break;
-            //小程序
+            //小程序 
         case LoginType.USER_MINI_PROGRAM:
                 
                 break;
