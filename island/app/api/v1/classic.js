@@ -5,7 +5,7 @@ const router = new Router({
 const {PositiveIntegerValidator} = require('../../validators/validator')
 
 const {Auth} = require('../../../middlewares/auth')
-router.get('latest', new Auth().m, async (ctx, next)=>{
+router.get('latest', new Auth(7).m, async (ctx, next)=>{
     ctx.body = ctx.auth.uid
 })
 
