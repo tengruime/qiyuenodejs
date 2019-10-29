@@ -39,7 +39,7 @@ class AuthFailed extends HttpException {
         super()
         this.code = 401
         this.msg = msg || '授权失败'
-        this.error_code = error_code || 10004
+        this.errorCode = errorCode || 10004
     }
 }
 
