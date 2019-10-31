@@ -39,6 +39,8 @@
   "_moduleAliases": {
     "@root": ".",
     "@models": "app/models",
-    "@validator": "app/validators/validator.js"
+    "@validators": "app/validators",
+    "@middlewares": "middlewares",
+    "@lib": "app/lib"
   }
 }
