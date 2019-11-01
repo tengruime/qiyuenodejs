@@ -87,6 +87,31 @@ class Favor extends Model {
         return favor?true:false
         
     }
+
+    // 个人的喜欢
+    static async getBookFavor(uid,bookID){
+        const favorNums = await Favor.count({
+            where:{
+                art_id:bookID,
+                type:400
+            }
+        })
+
+        const myFavor = await Favor.findOne({
+            where:{
+                uid,
+                art_id:bookID,
+                type:400
+            }
+        })
+        
+        // 数据库事物处理
+        return {
+            fav_nums:favorNums,
+            like_status: myFavor ? 1:0
+        }
+        
+    }
 }
 
 Favor.init({
