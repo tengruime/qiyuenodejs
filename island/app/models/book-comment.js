@@ -22,6 +22,16 @@ class Comment extends Model{
             })
         }
     }
+
+    static async getComments(bookID, content){
+        const comments = await Comment.findAll({
+            where:{
+                book_id:bookID
+            }
+        })
+
+        return comments
+    }
 }
 
 Comment.init({

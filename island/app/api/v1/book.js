@@ -50,12 +50,32 @@ router.get('/:book_id/favor',new Auth().m,async (ctx,next)=>{
 })
 
 router.get('/add/short_comment',new Auth().m,async (ctx,next)=>{
-    const v = await new AddShortCommentValidator().validate(ctx,{
+    const v = await new PositiveIntegerValidator().validate(ctx,{
         id:'book_id'
     })
     await Comment.addComment(v.get('body.book_id'),v.get('body.content'))
     success()
 })
 
+router.get('/:book_id/short_comment',new Auth().m,async (ctx,next)=>{
+    const v = await new AddShortCommentValidator().validate(ctx,{
+        id:'book_id'
+    })
+    const comments = await Comment.getCommonents(v.get('body.book_id'))
+    ctx.body = comments
+})
+
+router.get('/hot_keyword',async (ctx,next)=>{
+    
+    ctx.body = {
+        'hot': ['iOS',
+            '哈利',
+            '伯特',
+            '白夜行',
+            '薛之谦',
+            '罗大炮'
+        ]
+    }
+})
 
 module.exports = router
