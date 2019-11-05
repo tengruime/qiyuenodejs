@@ -1,4 +1,5 @@
-const Sequelize = require('sequelize')
+const {Sequelize,Model} = require('sequelize')
+const {unset, clone, isArray}  = require('lodash')
 const {
     dbName,
     host,
@@ -42,6 +43,22 @@ sequelize.sync({
     //设置为true会每次删除数据库
     force:false
 })
+
+Model.prototype.toJSON = function(){
+    // let data = this.dataValues
+    let data = clone(this.dataValues)
+    unset(data, 'updated_at')
+    unset(data, 'created_at')
+    unset(data, 'deleted_at')
+
+    if(isArray(this.exclude)){
+        this.exclude.forEach(element => {
+            unset(data,element)
+        });
+    }
+
+    return data
+}
 
 module.exports = {
     sequelize

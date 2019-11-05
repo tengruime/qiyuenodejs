@@ -23,7 +23,7 @@ router.get('latest', new Auth().m, async (ctx, next)=>{
     // art.dataValues.index = flow.index
     art.setDataValue('index',flow.index)
     art.setDataValue('like_status',likeLatest)
-
+    // art.exclude = ['index','like_status']
     ctx.body = art
 })
 

@@ -14,16 +14,14 @@ const router = new Router({
 router.get('/hot_list',async (ctx,next)=>{
     const books = await HotBook.getAll()
     // ctx.body = {key:"book"}
-    ctx.body = {
-        books
-    }
+    ctx.body = books
 
 })
 
 router.get('/:id/detail',async (ctx,next)=>{
     const v = await new PositiveIntegerValidator().validate(ctx)
-    const book = await new Book(v.get('path.id'))
-    ctx.body = await book.detail()
+    const book = await new Book()
+    ctx.body = await book.detail(v.get('path.id'))
 })
 
 router.get('/search',async (ctx,next)=>{
@@ -50,18 +48,18 @@ router.get('/:book_id/favor',new Auth().m,async (ctx,next)=>{
 })
 
 router.get('/add/short_comment',new Auth().m,async (ctx,next)=>{
-    const v = await new PositiveIntegerValidator().validate(ctx,{
+    const v = await new AddShortCommentValidator().validate(ctx,{
         id:'book_id'
     })
-    await Comment.addComment(v.get('body.book_id'),v.get('body.content'))
+    await Comment.addComment(v.get('query.book_id'),v.get('query.content'))
     success()
 })
 
 router.get('/:book_id/short_comment',new Auth().m,async (ctx,next)=>{
-    const v = await new AddShortCommentValidator().validate(ctx,{
+    const v = await new PositiveIntegerValidator().validate(ctx,{
         id:'book_id'
     })
-    const comments = await Comment.getCommonents(v.get('body.book_id'))
+    const comments = await Comment.getComments(v.get('path.book_id'))
     ctx.body = comments
 })
 

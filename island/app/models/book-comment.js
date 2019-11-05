@@ -2,6 +2,11 @@ const {sequelize} = require('../../core/db')
 const {Sequelize,Model} = require('sequelize')
 
 class Comment extends Model{
+
+    constructor(){
+        super()
+    }
+
     static async addComment(bookID, content){
         const comment = await Comment.findOne({
             where:{
@@ -32,10 +37,19 @@ class Comment extends Model{
 
         return comments
     }
+
+    // toJSON(){
+    //     //this.dataValus
+    //     return {
+    //         content: this.getDataValue('content'),
+    //         nums: this.getDataValue('nums')
+    //     }
+    // }
 }
+Comment.prototype.exclude = ['book_id','id']
 
 Comment.init({
-    content:Sequelize.toString(12),
+    content:Sequelize.STRING(12),
     nums:{
         type:Sequelize.INTEGER,
         defaultValue:0

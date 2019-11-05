@@ -4,7 +4,8 @@ const {flatten} = require('lodash')
 const {
     Movie,
     Music,
-    Sentence
+    Sentence,
+    Book
 } = require('./classic')
 
 class Art{
@@ -83,7 +84,6 @@ class Art{
                 break;
                 // book
             case 400:
-            
                 break;
             default:
                 break;
@@ -118,7 +118,15 @@ class Art{
                 break;
                 // book
             case 400:
-            
+                const {
+                    Book
+                } = require('./book')
+                art = await Book.scope(scope).findOne(finder)
+                if(!art){
+                    art = await Book.create({
+                        id:art_id
+                    })
+                }
                 break;
             default:
                 break;
