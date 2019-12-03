@@ -3,9 +3,9 @@ const {Sequelize,Model} = require('sequelize')
 
 class Comment extends Model{
 
-    constructor(){
-        super()
-    }
+    // constructor(){
+    //     super()
+    // }
 
     static async addComment(bookID, content){
         const comment = await Comment.findOne({
@@ -23,6 +23,9 @@ class Comment extends Model{
             })
         } else {
             return await Comment.increment('nums',{
+                where:{
+                    book_id:bookID,
+                },
                 by:1
             })
         }

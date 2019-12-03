@@ -47,11 +47,11 @@ router.get('/:book_id/favor',new Auth().m,async (ctx,next)=>{
     }
 })
 
-router.get('/add/short_comment',new Auth().m,async (ctx,next)=>{
+router.post('/add/short_comment',new Auth().m,async (ctx,next)=>{
     const v = await new AddShortCommentValidator().validate(ctx,{
         id:'book_id'
     })
-    await Comment.addComment(v.get('query.book_id'),v.get('query.content'))
+    await Comment.addComment(v.get('body.book_id'),v.get('body.content'))
     success()
 })
 
@@ -59,8 +59,12 @@ router.get('/:book_id/short_comment',new Auth().m,async (ctx,next)=>{
     const v = await new PositiveIntegerValidator().validate(ctx,{
         id:'book_id'
     })
-    const comments = await Comment.getComments(v.get('path.book_id'))
-    ctx.body = comments
+    const bookID = v.get('path.book_id')
+    const comments = await Comment.getComments(bookID)
+    ctx.body = {
+        comments,
+        book_id:bookID
+    }
 })
 
 router.get('/hot_keyword',async (ctx,next)=>{

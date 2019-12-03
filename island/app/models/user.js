@@ -44,8 +44,8 @@ User.init({
         autoIncrement:true
     },
     nickname:Sequelize.STRING,
-    email:{
-        type:Sequelize.STRING(128),
+    account:{
+        type:Sequelize.STRING(11),
         unique:true
     },
     password:{

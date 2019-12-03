@@ -2,7 +2,7 @@ module.exports = {
     //prod
     environment:'dev',
     database:{
-        dbName:'7yue',
+        dbName:'yifengxiang',
         host:'localhost',
         port:3306,
         user:'root',
@@ -13,8 +13,8 @@ module.exports = {
         expiresIn:60*60*24*30
     },
     wx:{
-        appId:'wx31fad95373476eb1',
-        appSecret:'6f187c438c8f224f13695317fdf439ea',
+        appId:'wx00f4593112a103df',
+        appSecret:'da013aeb15d5da3d78bd789c029aa253',
         loginUrl:'https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code'
     },
     yushu:{

@@ -14,8 +14,11 @@ class PositiveIntegerValidator extends LinValidator {
 class RegisterValidator extends LinValidator {
     constructor(){
         super()
-        this.email = [
-            new Rule('isEmail','不符合Email规范')
+        this.account = [
+            new Rule('isLength','请输入正确的手机号码',{
+                min:11,
+                max:11
+            })
         ]
         this.password1 = [
             // 用户指定范围
@@ -119,25 +122,6 @@ function checkArtType(vals){
     }
 }
 
-// class Checker{
-//     constructor(type){
-//         this.enumType = type
-//     }
-
-//     check(vals,type){
-
-//         const type = vals.body.type || vals.path.type
-//         if(!type){
-//             throw new Error('type是必须参数')
-//         }
-//         type = parseInt(type)
-//         // this.parsed.path.type = type
-//         if(!this.enumType.isThisType(type)){
-//             throw new Error('type参数不合法')
-//         }
-//     }
-// }
-
 class LikeValidator extends PositiveIntegerValidator {
     constructor(){
         super()
@@ -161,12 +145,12 @@ class ClassicValidator extends LikeValidator {
 class SearchValidator extends LinValidator {
     constructor(){
         super()
-        this.q = [
-            new Rule('isLength','搜索关键字不能为空',{
-                min: 1,
-                max: 6
-            })
-        ]
+        // this.q = [
+        //     new Rule('isLength','搜索关键字不能为空',{
+        //         min: 0,
+        //         max: 6
+        //     })
+        // ]
         this.start = [
             new Rule('isInt','不符合规范',{
                 min:0,
@@ -174,7 +158,7 @@ class SearchValidator extends LinValidator {
             }),
             new Rule('isOptional','',0)
         ]
-        this.count = [
+        this.limit = [
             new Rule('isInt','不符合规范',{
                 min:1,
                 max: 20
@@ -189,12 +173,61 @@ class AddShortCommentValidator extends PositiveIntegerValidator {
         super()
         this.content = [
             new Rule('isLength','必须在1-12个字符',{
-                min:1,
-                max:12
+                    min:1,
+                    max:12
             })
         ]
     }
 }
+
+// 新增商品校验器
+class AddGoodsValidator extends LinValidator {
+    constructor(){
+        super()
+        this.goodsName,this.desc,this.specs = [
+            // new Rule('isNotEmpty','内容不能为空'),
+            new Rule("isLength", "长度必须大于1", 1)
+        ]
+        this.costPrice,this.selPrice = [
+            new Rule('isFloat','金额不符合规范',{
+                min:0.01
+            })
+        ]
+        this.goodsNum=[
+            new Rule('isInt','库存不能为0',{
+                min:1
+            })
+        ]
+    }
+}
+
+// 新增团购校验器
+class AddGroupValidator extends LinValidator {
+    constructor(){
+        super()
+        this.title,this.content,this.specs = [
+            // new Rule('isNotEmpty','内容不能为空'),
+            new Rule("isLength", "长度必须大于1", 1)
+        ]
+        this.costPrice,this.selPrice = [
+            new Rule('isFloat','金额不符合规范',{
+                min:0.01
+            })
+        ]
+        this.goodsNum=[
+            new Rule('isInt','库存不能为0',{
+                min:1
+            })
+        ]
+    }
+}
+
+// class NotFound extends LinValidator {
+//     constructor(){
+//         super()
+//         throw new Error('记录不存在')
+//     }
+// }
 
 module.exports = {
     PositiveIntegerValidator,
@@ -205,5 +238,7 @@ module.exports = {
     DislikeValidator,
     ClassicValidator,
     SearchValidator,
-    AddShortCommentValidator
+    AddShortCommentValidator,
+    AddGoodsValidator,
+    AddGroupValidator
 }
