@@ -205,29 +205,34 @@ class AddGoodsValidator extends LinValidator {
 class AddGroupValidator extends LinValidator {
     constructor(){
         super()
-        this.title,this.content,this.specs = [
+        this.title = [
             // new Rule('isNotEmpty','内容不能为空'),
             new Rule("isLength", "长度必须大于1", 1)
         ]
-        this.costPrice,this.selPrice = [
-            new Rule('isFloat','金额不符合规范',{
-                min:0.01
-            })
-        ]
-        this.goodsNum=[
-            new Rule('isInt','库存不能为0',{
-                min:1
+        // this.costPrice,this.selPrice = [
+        //     new Rule('isFloat','金额不符合规范',{
+        //         min:0.01
+        //     })
+        // ]
+        // this.goodsNum=[
+        //     new Rule('isInt','库存不能为0',{
+        //         min:1
+        //     })
+        // ]
+    }
+}
+
+class PhoneNumValidator extends LinValidator {
+    constructor(){
+        super()
+        this.phone = [
+            new Rule('isLength','请输入正确的手机号码',{
+                min:11,
+                max:11
             })
         ]
     }
 }
-
-// class NotFound extends LinValidator {
-//     constructor(){
-//         super()
-//         throw new Error('记录不存在')
-//     }
-// }
 
 module.exports = {
     PositiveIntegerValidator,
@@ -240,5 +245,6 @@ module.exports = {
     SearchValidator,
     AddShortCommentValidator,
     AddGoodsValidator,
-    AddGroupValidator
+    AddGroupValidator,
+    PhoneNumValidator
 }
