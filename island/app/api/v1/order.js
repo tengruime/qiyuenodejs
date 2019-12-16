@@ -30,14 +30,16 @@ router.post('new_order', new Auth().m, async (ctx, next)=>{
     
 })
 
-// 新增团购信息
-router.get('get_group', new Auth().m, async (ctx, next)=>{
+// 获取用户订单信息
+router.get('get_user_orders', new Auth().m, async (ctx, next)=>{
 
-    const v = await new PositiveIntegerValidator().validate(ctx)
+    const v = await new PositiveIntegerValidator().validate(ctx,{
+        id:'start'
+    })
 
-    const group = await Group.getGroup(v.get('query.id'),ctx.auth.uid)
+    const orders = await Order.getUserOrders(v.get('query.start'),v.get('query.limit'),ctx.auth.uid)
     
-    ctx.body = group
+    ctx.body = orders
     
 })
 

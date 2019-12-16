@@ -1,6 +1,5 @@
 const {sequelize} = require('../../core/db')
 const {Sequelize,Model,Op} = require('sequelize')
-const {OrderGoods = Goods} = require('./order.js')
 
 class Group extends Model{
 
@@ -137,45 +136,6 @@ class Group extends Model{
             })
 
             group.content = contents
-            group.setDataValue('goods',goods)
-        }
-         
-        return groups
-    }
-
-    // 获取当前用户的团购信息
-    static async getUserGroups(uid){
- 
-        const groups = await Group.findAll({
-            limit:10,
-            where:{
-                uid
-            }
-        })
-
-        for(let i=0;i<groups.length;i++) {
-
-            const group = groups[i]
-
-            const goods_ids = group.goods_ids.split(",")
-
-            const goods = await Goods.findAll({
-                where:{
-                    id:{
-                        [Op.in]:goods_ids
-                    }
-                }
-            })
-    
-            for (let index = 0; index < goods.length; index++) {
-                const element = goods[index];
-                const orderGoods = await OrderGoods.findOne({
-                    where:{
-                        id:element.group_goods_id
-                    }
-                })
-                element.group_nums =
-            }
             group.setDataValue('goods',goods)
         }
          

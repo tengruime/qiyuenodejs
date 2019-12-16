@@ -61,6 +61,54 @@ class Order extends Model{
         })
 
     }
+
+    // 获取当前用户的团购信息
+    static async getUserOrders(start,limit,uid){
+ 
+        start = parseInt(start) - 1
+        limit = parseInt(limit)
+        const orders = await Order.findAll({
+            offset: start * limit,
+            limit: limit,
+            where:{
+                uid
+            }
+        })
+
+        for(let i=0;i<orders.length;i++) {
+
+            const order = orders[i]
+
+            const goods_ids = order.goods_ids.split(",")
+            const goods_ids_int = []
+            goods_ids.forEach(item => {  
+                goods_ids_int.push(+item)
+            });  
+         
+
+            const goods = await Goods.findAll({
+                where:{
+                    id:{
+                        [Op.in]:goods_ids_int
+                    }
+                }
+            })
+    
+            // for (let index = 0; index < goods.length; index++) {
+            //     const element = goods[index];
+            //     const orderGoods = await Order.findOne({
+            //         where:{
+            //             id:element.group_goods_id
+            //         }
+            //     })
+            //     element.group_nums = 0
+            // }
+            order.setDataValue('goods',goods)
+            Order.removeAttribute('goods_ids')
+        }
+         
+        return orders
+    }
     
 }
 class Goods extends Model{ }
@@ -100,9 +148,9 @@ Goods.init({
     desc:Sequelize.STRING,
     // 商品规格信息
     specs:Sequelize.STRING,
-    // 成本价格
+    // 价格
     price:Sequelize.DECIMAL(10,2),
-    // 销售价
+    // 商品类型
     goods_type:Sequelize.INTEGER,
     // 购买数量
     goods_num:Sequelize.INTEGER,
