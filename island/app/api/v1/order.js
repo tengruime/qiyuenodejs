@@ -34,7 +34,7 @@ router.post('new_order', new Auth().m, async (ctx, next)=>{
 router.get('get_user_orders', new Auth().m, async (ctx, next)=>{
 
     const v = await new PositiveIntegerValidator().validate(ctx,{
-        id:'start'
+        id:'limit'
     })
 
     const orders = await Order.getUserOrders(v.get('query.start'),v.get('query.limit'),ctx.auth.uid)

@@ -280,7 +280,7 @@ Goods.init({
     //  // 商品所属团购
     // group_id:Sequelize.INTEGER
     // 团购目前购买数量
-    group_nums:Sequelize.STRING,
+    group_nums:Sequelize.INTEGER,
 },{
     sequelize,
     tableName:'group_goods'
@@ -288,5 +288,5 @@ Goods.init({
 
 module.exports = {
     Group,
-
+    Goods
 }

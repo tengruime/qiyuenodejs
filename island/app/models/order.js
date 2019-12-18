@@ -1,6 +1,6 @@
 const {sequelize} = require('../../core/db')
 const {Sequelize,Model,Op} = require('sequelize')
-const {Group} = require('./group')
+const groupModel = require('./group')
 
 class Order extends Model{
     // 新增团购订单
@@ -11,20 +11,39 @@ class Order extends Model{
 
             let goodsIds = [];
             for (let index = 0; index < goods.length; index++) {
+
+                // 创建订单商品信息
                 const element = goods[index];
-                const price = parseFloat(element.price)
+                const price = parseFloat(element.sel_price)
                 const result = await Goods.create({
-                    name:element.goodsName,
+                    name:element.name,
                     image:element.image,
                     desc:element.desc,
                     specs:element.specs,
                     price,
-                    goods_type:element.goodsType,
-                    goods_num:element.goodsNum,
+                    goods_type:element.goods_type,
+                    goods_num:element.num,
                     uid,
                     group_goods_id:element.id
                 },{transaction:t})
                 goodsIds.push(result.id)
+
+            
+                // 更新团购商品购买数量
+                const groupGoods = await groupModel.Goods.findOne({
+                    where:{
+                        id:element.id
+                    }
+                })
+                var groupGoodsNum =  parseInt(groupGoods.group_nums)
+                groupGoodsNum += element.num
+                await groupModel.Goods.update({
+                    group_nums:groupGoodsNum
+                },{
+                    where:{
+                        id:element.id
+                    }
+                },{transaction:t})
             }
 
             const order = await Order.create({
@@ -41,7 +60,7 @@ class Order extends Model{
             },{transaction:t})
 
             // 更新团购相关信息
-            const group = await Group.findOne({
+            const group = await groupModel.Group.findOne({
                 where:{
                     id:group_id
                 }
@@ -50,13 +69,14 @@ class Order extends Model{
             if(!group_mebs) {
                 group_mebs = uid.toString()
             }
-            await Group.update({
+            await groupModel.Group.update({
                 group_mebs
             },{
                 where:{
                     id:group_id
                 }
             },{transaction:t})
+
             return order
         })
 
@@ -65,7 +85,7 @@ class Order extends Model{
     // 获取当前用户的团购信息
     static async getUserOrders(start,limit,uid){
  
-        start = parseInt(start) - 1
+        start = parseInt(start)
         limit = parseInt(limit)
         const orders = await Order.findAll({
             offset: start * limit,
@@ -79,35 +99,77 @@ class Order extends Model{
 
             const order = orders[i]
 
-            const goods_ids = order.goods_ids.split(",")
-            const goods_ids_int = []
-            goods_ids.forEach(item => {  
-                goods_ids_int.push(+item)
-            });  
-         
-
-            const goods = await Goods.findAll({
+            const goods = await Order.getOrderGoods(order)
+    
+            // 获取团购相关信息
+            const group = await groupModel.Group.findOne({
                 where:{
-                    id:{
-                        [Op.in]:goods_ids_int
-                    }
+                    id:order.group_id
                 }
             })
-    
-            // for (let index = 0; index < goods.length; index++) {
-            //     const element = goods[index];
-            //     const orderGoods = await Order.findOne({
-            //         where:{
-            //             id:element.group_goods_id
-            //         }
-            //     })
-            //     element.group_nums = 0
-            // }
+
+            for (let index = 0; index < goods.length; index++) {
+                let item = goods[index]
+                const groupGoods = await groupModel.Goods.findOne({
+                    where:{
+                        id:item.group_goods_id
+                    }
+                })
+
+                item.setDataValue('totalNum',groupGoods.goods_num)
+                item.setDataValue('groupNums',groupGoods.group_nums)
+
+            }
+            
             order.setDataValue('goods',goods)
-            Order.removeAttribute('goods_ids')
+            order.setDataValue('group',group)
+
+            // Order.removeAttribute('goods_ids')
         }
          
         return orders
+    }
+
+    static async getOrderGoods(order){
+
+        const goods_ids = order.goods_ids.split(",")
+            const goods_ids_int = []
+            goods_ids.forEach(item => {  
+                item = parseInt(item)
+                goods_ids_int.push(item)
+            });  
+         
+
+        const goods = await Goods.findAll({
+            where:{
+                id:{
+                    [Op.in]:goods_ids_int
+                }
+            }
+        })
+
+        return goods
+    }
+
+    static async updateGroupGoods(group){
+
+        const goods_ids = group.goods_ids.split(",")
+            const goods_ids_int = []
+            goods_ids.forEach(item => {  
+                item = parseInt(item)
+                goods_ids_int.push(item)
+            });  
+         
+
+        const goods = await Goods.findAll({
+            where:{
+                id:{
+                    [Op.in]:goods_ids_int
+                }
+            }
+        })
+
+        return goods
     }
     
 }
